@@ -110,7 +110,17 @@ public class SsnValidator : ISsnValidator
         {
             return false;
         }
+        
+        // Check if the date is valid
         var yearOfBirth = century + year;
+        try
+        {
+            _ = new DateOnly(yearOfBirth, month, day);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return false;
+        }
         var nnnStr = ssn[7..10];
         if (!int.TryParse(nnnStr, out var nnn) || nnn < 2 || nnn > 999)
         {
@@ -126,8 +136,6 @@ public class SsnValidator : ISsnValidator
 
         return true;
     }
-    
-    
         
 
     /// <summary>

@@ -14,6 +14,8 @@ public class Tests
     [TestCaseSource(nameof(TooShortInvalidSsnTestCases))]
     [TestCaseSource(nameof(TooLongInvalidSsnTestCases))]
     [TestCaseSource(nameof(WrongChecksumInvalidSsnTestCases))]
+    [TestCaseSource(nameof(WrongNNNPartInvalidSsnTestCases))]
+    [TestCaseSource(nameof(InvalidDateInvalidSsnTestCases))]
     public void Validate_GivenInvalidSsn_ReturnsFalse(string ssn)
     {
         var sut = new SsnValidator();
@@ -50,14 +52,23 @@ public class Tests
         }
     }
     
-    // public static IEnumerable<object> WrongNNNPartInvalidSsnTestCases
-    // {
-    //     get
-    //     {
-    //         // These cases have valid checksum but invalid NNN value
-    //         yield return "010594Y9031";
-    //     }
-    // }
+    public static IEnumerable<object> WrongNNNPartInvalidSsnTestCases
+    {
+        get
+        {
+            // These cases have valid checksum but invalid NNN value
+            yield return "010594Y0011";
+        }
+    }
+    
+    public static IEnumerable<object> InvalidDateInvalidSsnTestCases
+    {
+        get
+        {
+            // February does not have 30 days
+            yield return "300201A903B";
+        }
+    }
 
     public static IEnumerable<object> ValidSsnTestCases
     {
