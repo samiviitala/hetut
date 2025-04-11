@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hetut", "Hetut\Hetut.csproj", "{8C6D9B51-C5B1-4C8A-8EAA-67E0E99B8219}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hetut.Test", "Hetut.Test\Hetut.Test.csproj", "{92216074-D0E5-4A62-8A6C-2DFB071CF158}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C6D9B51-C5B1-4C8A-8EAA-67E0E99B8219}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C6D9B51-C5B1-4C8A-8EAA-67E0E99B8219}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C6D9B51-C5B1-4C8A-8EAA-67E0E99B8219}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C6D9B51-C5B1-4C8A-8EAA-67E0E99B8219}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92216074-D0E5-4A62-8A6C-2DFB071CF158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92216074-D0E5-4A62-8A6C-2DFB071CF158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92216074-D0E5-4A62-8A6C-2DFB071CF158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92216074-D0E5-4A62-8A6C-2DFB071CF158}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
