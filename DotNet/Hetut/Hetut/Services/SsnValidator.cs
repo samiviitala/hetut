@@ -1,23 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Hetut;
-
-/// <summary>
-///     Validator for Finnish social security number.
-/// </summary>
-public interface ISsnValidator
-{
-    /// <summary>
-    ///     Validates the given Finnish social security number.
-    ///     This method efficiently checks the format and structure of the SSN, only returning a boolean value indicating validity of given SSN.
-    ///     <remarks>
-    ///     Considers test SSNs where NNN is 900-999 as valid.
-    ///     </remarks>
-    /// </summary>
-    /// <param name="ssn">Finnish social security number to validate.</param>
-    /// <returns>True if the given Finnish social security number is valid; otherwise, false.</returns>
-    bool Validate([NotNullWhen(true)] string? ssn);
-}
 
 /// <inheritdoc cref="ISsnValidator"/> 
 public class SsnValidator : ISsnValidator
@@ -60,6 +41,7 @@ public class SsnValidator : ISsnValidator
         { 30, 'Y' }
     };
     
+    /// <inheritdoc cref="ISsnValidator"/> 
     public bool Validate(string? ssn)
     {
         /*
@@ -136,7 +118,6 @@ public class SsnValidator : ISsnValidator
 
         return true;
     }
-        
 
     /// <summary>
     /// Finnish Social security number allows following century separator characters:
