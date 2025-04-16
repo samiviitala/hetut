@@ -93,6 +93,7 @@ public class SsnValidator : ISsnValidator
             case 'W':
             case 'V':
             case 'U':
+            case '-':
                 century = 1900;
                 break;
             case '+':
