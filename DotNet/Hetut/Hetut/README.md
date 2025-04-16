@@ -11,7 +11,7 @@ Where:
 - PP = day of birth (01-31)
 - KK = month of birth (01-12)
 - VV = two last digits of year of birth (00-99)
-- X = century separator character (A-F, Y-U, +) indicating century of birth 1800, 1900 or 2000
+- X = century separator character (A-F, Y-U, +, -) indicating century of birth 1800, 1900 or 2000
 - NNN = serial number (002-899)
   - Even for women
   - Odd for men

@@ -99,6 +99,7 @@ public class SsnExtractor : ISsnExtractor
             case 'W':
             case 'V':
             case 'U':
+            case '-':
                 century = 1900;
                 break;
             case '+':
