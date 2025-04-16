@@ -11,7 +11,7 @@ public interface ISsnExtractor
     /// Try to extract the information from the given Finnish social security number.
     /// </summary>
     /// <param name="ssn">Finnish social security number to extract the information from.</param>
-    /// <param name="ssnInformation">Extracted information contained within the SSN if SSN was valid, default otherwise</param>
+    /// <param name="ssnInformation">Extracted information contained within the SSN if SSN was valid, null otherwise</param>
     /// <returns>True if SSN is valid, false otherwise</returns>
-    bool TryExtract([NotNullWhen(true)] string? ssn, out SsnInformation ssnInformation);
+    bool TryExtract([NotNullWhen(true)] string? ssn, [NotNullWhen(true)] out SsnInformation? ssnInformation);
 }

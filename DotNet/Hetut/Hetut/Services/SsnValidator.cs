@@ -3,6 +3,7 @@ namespace Hetut;
 /// <inheritdoc cref="ISsnValidator"/> 
 public class SsnValidator : ISsnValidator
 {
+    
     /// <summary>
     /// Dictionary of valid checksum characters for Finnish social security number.
     /// </summary>
@@ -44,21 +45,6 @@ public class SsnValidator : ISsnValidator
     /// <inheritdoc cref="ISsnValidator"/> 
     public bool Validate(string? ssn)
     {
-        /*
-         * Valid Finnish social security number is in the format:
-         * PPKKVVXNNNT
-         * Where:
-         * - PP = day of birth (01-31)
-         * - KK = month of birth (01-12)
-         * - VV = two last digits of year of birth (00-99)
-         * - X = century separator character (A-F, Y-U, +) indicating century of birth 1800, 1900 or 2000
-         * - NNN = serial number (002-899)
-         *   - Even for women
-         *   - Odd for men
-         *   - Values 900 - 999 are reserved for testing purposes and are not generally considered as valid values
-         * - T = checksum character (0-9, A-Y) which is calculated as PPKKVVNNN % 31 and then reminder dictates the checksum with fixed values seen in _checksumDictionary
-         */
-        
         // Empty ssn is obviously invalid
         if(string.IsNullOrEmpty(ssn))
         {
@@ -71,6 +57,7 @@ public class SsnValidator : ISsnValidator
             return false;
         }
         
+        // Validate ppkkvv part of the ssn
         var pp = ssn[..2];
         var kk = ssn[2..4];
         var vv = ssn[4..6];
@@ -88,9 +75,31 @@ public class SsnValidator : ISsnValidator
             return false;
         }
 
-        if (!TryParseCentury(ssn[6], out var century))
+        // Validate century part of ssn
+        var centuryChar = ssn[6];
+        int century;
+        switch (centuryChar)
         {
-            return false;
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+            case 'E':
+            case 'F':
+                century = 2000;
+                break;
+            case 'Y':
+            case 'X':
+            case 'W':
+            case 'V':
+            case 'U':
+                century = 1900;
+                break;
+            case '+':
+                century = 1800;
+                break;
+            default:
+                return false;
         }
         
         // Check if the date is valid
@@ -103,71 +112,27 @@ public class SsnValidator : ISsnValidator
         {
             return false;
         }
+        
+        // Validate nnn part of ssn
         var nnnStr = ssn[7..10];
         if (!int.TryParse(nnnStr, out var nnn) || nnn < 2 || nnn > 999)
         {
             return false;
         }
+        
+        // Check if the nnn part is valid
         var ppkkvvnnn = int.Parse(pp + kk + vv + nnnStr);
-        var checksumChar = ssn[10];
-        if(!TryCalculateChecksum(ppkkvvnnn, out var calculatedChecksumChar) || 
-           checksumChar != calculatedChecksumChar)
+        var ssnChecksum = ssn[10];
+        
+        // Calculate and validate the checksum
+        var reminder = ppkkvvnnn % 31;
+        ChecksumDictionary.TryGetValue(reminder, out var correctChecksum);
+     
+        if(ssnChecksum != correctChecksum)
         {
             return false;
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// Finnish Social security number allows following century separator characters:
-    ///
-    /// <list type="bullet">
-    ///<item>A, B, C, D, E, F for 2000s</item>
-    ///<item>Y, X, W, V, U for 1900s</item>
-    ///<item>+ for 1800s</item>
-    /// </list>
-    /// </summary>
-    /// <param name="centuryChar">Century character</param>
-    /// <param name="century">Output variable for parsed century: 1800 or 1900 or 2000 for valid century, -1 otherwise</param>
-    /// <returns>True if valid century character, false otherwise</returns>
-    private static bool TryParseCentury(char centuryChar, out int century)
-    {
-        switch (centuryChar)
-        {
-            case 'A':
-            case 'B':
-            case 'C':
-            case 'D':
-            case 'E':
-            case 'F':
-                century = 2000;
-                return true;
-            case 'Y':
-            case 'X':
-            case 'W':
-            case 'V':
-            case 'U':
-                century = 1900;
-                return true;
-            case '+':
-                century = 1800;
-                return true;
-            default:
-                century = -1;
-                return false;
-        }
-    }
-    
-    /// <summary>
-    /// Try parse/calculate the checksum character for the given ppkkvvnnn part of Finnish social security number.
-    /// </summary>
-    /// <param name="ppkkvvnnn">ppkkvvnnn from ssn</param>
-    /// <param name="checksumChar">Output variable for parsed checksum char for valid ssns, otherwise default</param>
-    /// <returns>True if </returns>
-    private static bool TryCalculateChecksum(int ppkkvvnnn, out char checksumChar)
-    {
-        var checksum = ppkkvvnnn % 31;
-        return ChecksumDictionary.TryGetValue(checksum, out checksumChar);
     }
 }
