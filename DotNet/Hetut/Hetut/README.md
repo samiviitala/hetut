@@ -25,3 +25,6 @@ I'm interested in adding more languages, so if you have a working implementation
 
 ## License
 MIT
+
+## TODO:
+- Validation of dates below year 1800 and future dates
