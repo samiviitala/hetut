@@ -58,6 +58,9 @@ public class SsnGenerator : ISsnGenerator
         var day = rng.Next(1, daysInMonth + 1);
         
         var yearReminder = year % 100;
+        
+        
+        
         int century = 1800;
         var centuryChar = century switch
         {
