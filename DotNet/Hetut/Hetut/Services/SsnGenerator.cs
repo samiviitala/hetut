@@ -1,9 +1,10 @@
 ﻿namespace Hetut;
 
 /// <inheritdoc /> 
-public class SsnGenerator : ISsnGenerator
+public class SsnGenerator(int? seed = null) : ISsnGenerator
 {
-    
+    private readonly Random _rng = new(seed ?? new Random().Next());
+
     /// <summary>
     /// Dictionary of valid checksum characters for Finnish social security number.
     /// </summary>
@@ -43,26 +44,24 @@ public class SsnGenerator : ISsnGenerator
     };
     
     /// <inheritdoc />
-    public string GenerateSsn(int? seed = null)
+    public string GenerateSsn()
     {
-        seed ??= new Random().Next();
-        var rng = new Random(seed.Value);
 
         // Generate random date of birth
         // TODO: Add possibility to pass the current date/upper boundary as a parameter
         var currentYear = DateTime.Now.Year;
-        var year = rng.Next(1800, currentYear + 1);
-        var month = rng.Next(1, 13);
+        var year = _rng.Next(1800, currentYear + 1);
+        var month = _rng.Next(1, 13);
         var daysInMonth = DateTime.DaysInMonth(year, month);
-        var day = rng.Next(1, daysInMonth + 1);
+        var day = _rng.Next(1, daysInMonth + 1);
         
         // Generate the century character based on the year
         var yearReminder = year % 100;
         var century = year - yearReminder;
         var centuryChar = century switch
         {
-            2000 => "ABCDEF"[rng.Next(6)],
-            1900 => "YXWVU-"[rng.Next(6)],
+            2000 => "ABCDEF"[_rng.Next(6)],
+            1900 => "YXWVU-"[_rng.Next(6)],
             1800 => '+',
             _ => throw new InvalidOperationException($"SSN generation encountered invalid random generated date with year {year}." +
                                                      $"Century character can only be calculated for following centuries: 1800, 1900, or 2000." +
@@ -72,15 +71,15 @@ public class SsnGenerator : ISsnGenerator
         // Half male, half female
         // TODO: Validate even distribution of NNN values in unit tests
         int nnn;
-        if (rng.Next(0, 2) == 0)
+        if (_rng.Next(0, 2) == 0)
         {
             // Random odd between 002 - 999
-            nnn = rng.Next(1, 500) * 2 + 1;
+            nnn = _rng.Next(1, 500) * 2 + 1;
         }
         else
         {
             // Random even between 002 - 999
-            nnn = rng.Next(1, 500) * 2;
+            nnn = _rng.Next(1, 500) * 2;
         }
 
         var ppkkvvnnn = day * 10000000 + 

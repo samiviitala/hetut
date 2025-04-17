@@ -27,12 +27,55 @@ public class SsnGeneratorTests
     [TestCase(987654321)]
     public void Generate_WithSeed_ReturnsValidSSN(int seed)
     {
-        var sut = new SsnGenerator();
-        var ssn = sut.GenerateSsn(seed);
+        var sut = new SsnGenerator(seed);
+        var ssn = sut.GenerateSsn();
 
         var validator = new SsnValidator();
         var isValid = validator.Validate(ssn);
         Assert.That(isValid, Is.EqualTo(true));
+    }
+
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(123)]
+    [TestCase(987654321)]
+    public void Generate_WithSameSeed_ReturnsSameSSN(int seed)
+    {
+        var sut1 = new SsnGenerator(seed);
+        var sut2 = new SsnGenerator(seed);
+
+        const int count = 10;
+        List<string> ssns1 = new();
+        List<string> ssns2 = new();
+        
+        for(var i = 0; i < count; i++)
+        {
+            ssns1.Add(sut1.GenerateSsn());
+            ssns2.Add(sut2.GenerateSsn());
+        }
+        
+        Assert.That(ssns1, Is.EqualTo(ssns2));
+    }
+    
+    [TestCase(0, 1)]
+    [TestCase(123, 456)]
+    [TestCase(987654321, 638646384)]
+    public void Generate_WithDifferentSeed_ReturnsDifferentSSN(int seed1, int seed2)
+    {
+        var sut1 = new SsnGenerator(seed1);
+        var sut2 = new SsnGenerator(seed2);
+
+        const int count = 10;
+        List<string> ssns1 = new();
+        List<string> ssns2 = new();
+        
+        for(var i = 0; i < count; i++)
+        {
+            ssns1.Add(sut1.GenerateSsn());
+            ssns2.Add(sut2.GenerateSsn());
+        }
+        
+        Assert.That(ssns1, Is.Not.EqualTo(ssns2));
     }
     
     /// <summary>

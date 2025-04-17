@@ -9,5 +9,5 @@ public interface ISsnGenerator
     ///     Generates a valid Finnish social security number.
     /// </summary>
     /// <returns>Valid Finnish social security number</returns>
-    public string GenerateSsn(int? seed = null);
+    public string GenerateSsn();
 }
