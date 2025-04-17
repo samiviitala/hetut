@@ -57,11 +57,9 @@ public class SsnGenerator : ISsnGenerator
         var daysInMonth = DateTime.DaysInMonth(year, month);
         var day = rng.Next(1, daysInMonth + 1);
         
+        // Generate the century character based on the year
         var yearReminder = year % 100;
-        
-        
-        
-        int century = 1800;
+        var century = year - yearReminder;
         var centuryChar = century switch
         {
             2000 => "ABCDEF"[rng.Next(6)],
@@ -70,17 +68,18 @@ public class SsnGenerator : ISsnGenerator
             _ => throw new ArgumentOutOfRangeException(nameof(century), "Century must be 1800, 1900, or 2000")
         };
 
-        // TODO: Fix nnn generation
+        
         int nnn;
         if (gender == Gender.Male)
         {
-            nnn = rng.Next(3, 499) * 2;
+            // Random odd between 002 - 999
+            nnn = rng.Next(1, 500) * 2 + 1;
         }
         else
         {
-            nnn = rng.Next(3, 499) * 2 - 1;
+            // Random even between 002 - 999
+            nnn = rng.Next(1, 500) * 2;
         }
-        
 
         var pp = day.ToString("D2");
         var kk = month.ToString("D2");
