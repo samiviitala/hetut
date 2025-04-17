@@ -89,7 +89,7 @@ public class SsnGeneratorTests
         var femaleCount = 0;
     
         // Your SSN generator
-        var ssnGenerator = new SsnGenerator();
+        var ssnGenerator = new SsnGenerator(seed);
         var ssnExtractor = new SsnExtractor();
     
         // Generate samples and count

@@ -23,6 +23,11 @@ If you have any suggestions or improvements, please feel free to open an issue o
 
 I'm interested in adding more languages, so if you have a working implementation in another language e.g. Java and SQL, please feel free to submit a pull request.
 
+## Improvements
+There are multiple improvements that could be implemented in the C# implementation to improve performance, memory usage, and overall code quality. 
+However, this would defeat the purpose of acting as a simple reference implementation which can easily be ported to another languages.
+We could for example in the validator use memory spans instead of substrings but these C# specific quirks will not translate to other languages as easily.
+
 ## License
 MIT
 
