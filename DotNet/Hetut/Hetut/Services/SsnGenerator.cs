@@ -48,8 +48,6 @@ public class SsnGenerator : ISsnGenerator
         seed ??= new Random().Next();
         var rng = new Random(seed.Value);
 
-        var gender = (Gender) rng.Next(0, 2);
-        
         // Generate random date of birth
         var currentYear = DateTime.Now.Year;
         var year = rng.Next(1800, currentYear + 1);
@@ -68,9 +66,9 @@ public class SsnGenerator : ISsnGenerator
             _ => throw new ArgumentOutOfRangeException(nameof(century), "Century must be 1800, 1900, or 2000")
         };
 
-        
+        // Half male, half female
         int nnn;
-        if (gender == Gender.Male)
+        if (rng.Next(0, 2) == 0)
         {
             // Random odd between 002 - 999
             nnn = rng.Next(1, 500) * 2 + 1;
