@@ -63,7 +63,9 @@ public class SsnGenerator : ISsnGenerator
             2000 => "ABCDEF"[rng.Next(6)],
             1900 => "YXWVU-"[rng.Next(6)],
             1800 => '+',
-            _ => throw new ArgumentOutOfRangeException(nameof(century), "Century must be 1800, 1900, or 2000")
+            _ => throw new InvalidOperationException($"SSN generation encountered invalid random generated date with year {year}." +
+                                                     $"Century character can only be calculated for following centuries: 1800, 1900, or 2000." +
+                                                     $"This error can occur due to system clock being set to future date, since upper boundary of the random date generation is set to current date.")
         };
 
         // Half male, half female
