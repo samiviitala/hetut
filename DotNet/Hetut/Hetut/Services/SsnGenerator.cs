@@ -18,9 +18,7 @@ public class SsnGenerator(int? seed = null) : ISsnGenerator
     /// <inheritdoc />
     public string GenerateSsn()
     {
-
         // Generate random date of birth
-        // TODO: Add possibility to pass the current date/upper boundary as a parameter
         var currentYear = DateTime.Now.Year;
         var year = _rng.Next(1800, currentYear + 1);
         var month = _rng.Next(1, 13);
