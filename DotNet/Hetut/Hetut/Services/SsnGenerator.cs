@@ -49,6 +49,7 @@ public class SsnGenerator : ISsnGenerator
         var rng = new Random(seed.Value);
 
         // Generate random date of birth
+        // TODO: Add possibility to pass the current date/upper boundary as a parameter
         var currentYear = DateTime.Now.Year;
         var year = rng.Next(1800, currentYear + 1);
         var month = rng.Next(1, 13);
@@ -69,6 +70,7 @@ public class SsnGenerator : ISsnGenerator
         };
 
         // Half male, half female
+        // TODO: Validate even distribution of NNN values in unit tests
         int nnn;
         if (rng.Next(0, 2) == 0)
         {

@@ -93,7 +93,7 @@ public class SsnValidator : ISsnValidator
             case 'W':
             case 'V':
             case 'U':
-            case '-':
+            case '-': // TODO: Add unit test cases for - case
                 century = 1900;
                 break;
             case '+':
