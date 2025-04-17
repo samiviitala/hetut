@@ -81,11 +81,10 @@ public class SsnGenerator : ISsnGenerator
             nnn = rng.Next(1, 500) * 2;
         }
 
-        var pp = day.ToString("D2");
-        var kk = month.ToString("D2");
-        var vv = yearReminder.ToString("D2");
-        var nnnStr = nnn.ToString("D3");
-        var ppkkvvnnn = int.Parse(pp + kk + vv + nnnStr);
+        var ppkkvvnnn = day * 10000000 + 
+                        month * 100000 + 
+                        yearReminder * 1000 + 
+                        nnn;
 
         // Calculate and validate the checksum
         var reminder = ppkkvvnnn % 31;

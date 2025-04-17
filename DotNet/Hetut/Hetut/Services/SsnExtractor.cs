@@ -130,9 +130,12 @@ public class SsnExtractor : ISsnExtractor
             ssnInformation = null;
             return false;
         }
-
+        
         // Check if the nnn part is valid
-        var ppkkvvnnn = int.Parse(pp + kk + vv + nnnStr);
+        var ppkkvvnnn = day * 10000000 + 
+                        month * 100000 + 
+                        year * 1000 + 
+                        nnn;
         var ssnChecksum = ssn[10];
 
         // Calculate and validate the checksum
