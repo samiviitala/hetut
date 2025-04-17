@@ -46,4 +46,12 @@ public class SsnExtractorTests
         sut.TryExtract(ssn, out var result);
         return result!.IsTestSsn;
     }
+    
+    [TestCaseSource(typeof(SsnExtractorTestCases), nameof(SsnExtractorTestCases.IsAfter2023ReformTestCases))]
+    public bool TryExtract_GivenValidSSN_ExtractsIsAfter2023Reform(string ssn)
+    {
+        var sut = new SsnExtractor();
+        sut.TryExtract(ssn, out var result);
+        return result!.IsAfter2023Reform;
+    }
 }

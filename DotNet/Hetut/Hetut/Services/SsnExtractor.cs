@@ -150,7 +150,8 @@ public class SsnExtractor : ISsnExtractor
 
         var gender = nnn % 2 == 0 ? Gender.Female : Gender.Male;
         var isTestSsn = nnn >= 900;
-        ssnInformation = new SsnInformation(dateOfBirth, gender, isTestSsn);
+        var isAfter2023Reform = centuryChar is 'B' or 'C' or 'D' or 'E' or 'F' or 'Y' or 'X' or 'W' or 'V' or 'U';
+        ssnInformation = new SsnInformation(dateOfBirth, gender, isTestSsn, isAfter2023Reform);
         return true;
     }
 }

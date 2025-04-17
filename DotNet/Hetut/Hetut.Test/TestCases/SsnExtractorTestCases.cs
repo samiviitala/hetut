@@ -63,4 +63,34 @@ public class SsnExtractorTestCases
             yield return new TestCaseData("050115A775W").Returns(false);
         }
     }
+    
+    public static IEnumerable IsAfter2023ReformTestCases
+    {
+        get
+        {
+            // Test SSNs after 2023 reform
+            yield return new TestCaseData("240175Y955E").Returns(true); // 1900 century, test ssn, Y
+            yield return new TestCaseData("050910X919P").Returns(true); // 1900 century, test ssn, X
+            yield return new TestCaseData("110343W9431").Returns(true); // 1900 century, test ssn, W
+            yield return new TestCaseData("260746V931A").Returns(true); // 1900 century, test ssn, V
+            yield return new TestCaseData("020123U975F").Returns(true); // 1900 century, test ssn, U
+            
+            // Real SSNs after 2023 reform
+            yield return new TestCaseData("090280Y643T").Returns(true); // 1900 century, test ssn, Y
+            yield return new TestCaseData("130688X665C").Returns(true); // 1900 century, test ssn, X
+            yield return new TestCaseData("240379W449S").Returns(true); // 1900 century, test ssn, W
+            yield return new TestCaseData("290946V499X").Returns(true); // 1900 century, test ssn, V
+            yield return new TestCaseData("070254U337X").Returns(true); // 1900 century, test ssn, U
+            
+            // Test SSNs before 2023 reform
+            yield return new TestCaseData("100201+9853").Returns(false); // 1800 century, test ssn, +
+            yield return new TestCaseData("280892-971K").Returns(false); // 1900 century, test ssn, -
+            yield return new TestCaseData("130505A981B").Returns(false); // 2000 century, test ssn, A
+            
+            // Real SSNs before 2023 reform
+            yield return new TestCaseData("130338+039V").Returns(false); // 1800 century, test ssn, +
+            yield return new TestCaseData("131244-511W").Returns(false); // 1900 century, test ssn, -
+            yield return new TestCaseData("200321A3213").Returns(false); // 2000 century, test ssn, A
+        }
+    }
 }
