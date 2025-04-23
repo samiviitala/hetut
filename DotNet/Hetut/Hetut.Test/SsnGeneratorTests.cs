@@ -56,6 +56,21 @@ public class SsnGeneratorTests
         
         Assert.That(ssns1, Is.EqualTo(ssns2));
     }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void Generate_WithTypes_ReturnsSsnWithTypes(bool isTestSsn)
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(isTestSsn: isTestSsn));
+        var ssnExtractor = new SsnExtractor();
+        
+        for(var i=0; i<100; i++)
+        {
+            var ssn = sut.GenerateSsn();
+            ssnExtractor.TryExtract(ssn, out var ssnInformation);
+            Assert.That(ssnInformation!.IsTestSsn, Is.EqualTo(isTestSsn));
+        }
+    }
     
     [TestCase(0, 1)]
     [TestCase(123, 456)]

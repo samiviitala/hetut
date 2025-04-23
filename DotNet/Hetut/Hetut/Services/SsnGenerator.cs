@@ -45,18 +45,22 @@ public class SsnGenerator : ISsnGenerator
                                                      $"Century character can only be calculated for following centuries: 1800, 1900, or 2000." +
                                                      $"This error can occur due to system clock being set to future date, since upper boundary of the random date generation is set to current date.")
         };
+        
+        // Test SSNs have NNN between 900-999
+        // Real SSNs have NNN between 002-899
+        (var lowerBound, var upperBound) = (1, 450);
+        if(_options.IsTestSsn)
+            (lowerBound, upperBound) = (450, 500);
 
         // Half male, half female
         int nnn;
         if (_rng.Next(0, 2) == 0)
         {
-            // Random odd between 002 - 999
-            nnn = _rng.Next(1, 500) * 2 + 1;
+            nnn = _rng.Next(lowerBound, upperBound) * 2 + 1;
         }
         else
         {
-            // Random even between 002 - 999
-            nnn = _rng.Next(1, 500) * 2;
+            nnn = _rng.Next(lowerBound, upperBound) * 2;
         }
 
         var ppkkvvnnn = day * 10000000 + 
