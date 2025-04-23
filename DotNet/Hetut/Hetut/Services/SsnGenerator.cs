@@ -1,9 +1,17 @@
 ﻿namespace Hetut;
 
 /// <inheritdoc /> 
-public class SsnGenerator(int? seed = null) : ISsnGenerator
+public class SsnGenerator : ISsnGenerator
 {
-    private readonly Random _rng = new(seed ?? new Random().Next());
+
+    private readonly SsnGeneratorOptions _options;
+    private readonly Random _rng;
+
+    public SsnGenerator(SsnGeneratorOptions? options = null)
+    {
+        _options = options ?? SsnGeneratorOptions.Create();
+        _rng = new Random(_options.Seed);
+    }
 
     /// <summary>
     ///     Valid checksum characters for Finnish social security number.
@@ -14,7 +22,7 @@ public class SsnGenerator(int? seed = null) : ISsnGenerator
         'A', 'B', 'C', 'D', 'E', 'F', 'H', 'J', 'K', 'L', 
         'M', 'N', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'
     };
-    
+
     /// <inheritdoc />
     public string GenerateSsn()
     {
@@ -39,7 +47,6 @@ public class SsnGenerator(int? seed = null) : ISsnGenerator
         };
 
         // Half male, half female
-        // TODO: Validate even distribution of NNN values in unit tests
         int nnn;
         if (_rng.Next(0, 2) == 0)
         {

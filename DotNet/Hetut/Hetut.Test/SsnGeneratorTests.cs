@@ -27,7 +27,7 @@ public class SsnGeneratorTests
     [TestCase(987654321)]
     public void Generate_WithSeed_ReturnsValidSSN(int seed)
     {
-        var sut = new SsnGenerator(seed);
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(seed));
         var ssn = sut.GenerateSsn();
 
         var validator = new SsnValidator();
@@ -41,8 +41,8 @@ public class SsnGeneratorTests
     [TestCase(987654321)]
     public void Generate_WithSameSeed_ReturnsSameSSN(int seed)
     {
-        var sut1 = new SsnGenerator(seed);
-        var sut2 = new SsnGenerator(seed);
+        var sut1 = new SsnGenerator(SsnGeneratorOptions.Create(seed));
+        var sut2 = new SsnGenerator(SsnGeneratorOptions.Create(seed));
 
         const int count = 10;
         List<string> ssns1 = new();
@@ -62,8 +62,8 @@ public class SsnGeneratorTests
     [TestCase(987654321, 638646384)]
     public void Generate_WithDifferentSeed_ReturnsDifferentSSN(int seed1, int seed2)
     {
-        var sut1 = new SsnGenerator(seed1);
-        var sut2 = new SsnGenerator(seed2);
+        var sut1 = new SsnGenerator(SsnGeneratorOptions.Create(seed1));
+        var sut2 = new SsnGenerator(SsnGeneratorOptions.Create(seed2));
 
         const int count = 10;
         List<string> ssns1 = new();
@@ -89,7 +89,7 @@ public class SsnGeneratorTests
         var femaleCount = 0;
     
         // Your SSN generator
-        var ssnGenerator = new SsnGenerator(seed);
+        var ssnGenerator = new SsnGenerator(SsnGeneratorOptions.Create(seed));
         var ssnExtractor = new SsnExtractor();
     
         // Generate samples and count

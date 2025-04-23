@@ -17,6 +17,4 @@ public interface ISsnValidator
     /// <param name="ssn">Finnish social security number to validate.</param>
     /// <returns>True if the given Finnish social security number is valid; otherwise, false.</returns>
     bool Validate([NotNullWhen(true)] string? ssn);
-
-    
 }

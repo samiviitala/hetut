@@ -3,10 +3,11 @@
 /// <summary>
 ///     Gender of a person
 /// </summary>
+[Flags]
 public enum Gender
 {
     /// <summary>
-    /// SSN Indicates that person is a man
+    /// SSN Indicates that person is a male
     /// </summary>
     Male,
     /// <summary>
