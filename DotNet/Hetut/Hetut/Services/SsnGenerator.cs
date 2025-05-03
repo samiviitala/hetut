@@ -26,6 +26,12 @@ public class SsnGenerator : ISsnGenerator
     /// <inheritdoc />
     public string GenerateSsn()
     {
+        // Validate options
+        if (_options.Genders.Length == 0)
+        {
+            throw new InvalidOperationException("Options must contain at least one gender");
+        }
+        
         // Generate random date of birth
         var currentYear = DateTime.Now.Year;
         var year = _rng.Next(1800, currentYear + 1);
@@ -48,13 +54,14 @@ public class SsnGenerator : ISsnGenerator
         
         // Test SSNs have NNN between 900-999
         // Real SSNs have NNN between 002-899
-        (var lowerBound, var upperBound) = (1, 450);
+        var (lowerBound, upperBound) = (1, 450);
         if(_options.IsTestSsn)
             (lowerBound, upperBound) = (450, 500);
 
-        // Half male, half female
+        //  Gender is randomly picked from the genders array in options
         int nnn;
-        if (_rng.Next(0, 2) == 0)
+        var gender = _options.Genders.Length > 1 ? _options.Genders[_rng.Next(0, _options.Genders.Length)] : _options.Genders[0];
+        if (gender == 0)
         {
             nnn = _rng.Next(lowerBound, upperBound) * 2 + 1;
         }

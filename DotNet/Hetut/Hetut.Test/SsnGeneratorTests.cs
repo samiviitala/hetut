@@ -71,40 +71,41 @@ public class SsnGeneratorTests
             Assert.That(ssnInformation!.IsTestSsn, Is.EqualTo(isTestSsn));
         }
     }
-    
-    [TestCase(0, 1)]
-    [TestCase(123, 456)]
-    [TestCase(987654321, 638646384)]
-    public void Generate_WithDifferentSeed_ReturnsDifferentSSN(int seed1, int seed2)
-    {
-        var sut1 = new SsnGenerator(SsnGeneratorOptions.Create(seed1));
-        var sut2 = new SsnGenerator(SsnGeneratorOptions.Create(seed2));
 
-        const int count = 10;
-        List<string> ssns1 = new();
-        List<string> ssns2 = new();
+    [Test]
+    public void Generate_WithEmptyGenders_ThrowsInvalidOperationsException()
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(genders: Array.Empty<Gender>()));
+        Assert.Throws<InvalidOperationException>(() => sut.GenerateSsn());
+    }
+    
+    [TestCase(Gender.Male)]
+    [TestCase(Gender.Female)]
+    public void Generate_WithSingleGender_ReturnsSsnWithGender(Gender gender)
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(genders: new []{ gender }));
+        var ssnExtractor = new SsnExtractor();
         
-        for(var i = 0; i < count; i++)
+        for(var i=0; i<100; i++)
         {
-            ssns1.Add(sut1.GenerateSsn());
-            ssns2.Add(sut2.GenerateSsn());
+            var ssn = sut.GenerateSsn();
+            ssnExtractor.TryExtract(ssn, out var ssnInformation);
+            Assert.That(ssnInformation!.Gender, Is.EqualTo(gender), message: $"Expected ssn with gender {gender}, but got ssn {ssn} whose nnn part indicates wrong gender");
         }
-        
-        Assert.That(ssns1, Is.Not.EqualTo(ssns2));
     }
     
     /// <summary>
     ///     Use fixed seed which is known to generate a result over the confidence level
     /// </summary>
     [TestCase(123)]
-    public void Generate_WithSeed_GenerateEvenDistributionOfMaleAndFemaleSsns(int seed)
+    public void Generate_WithTwoGenders_ReturnsEvenDistributionOfMaleAndFemaleSsns(int seed)
     {
         const int numberOfSamples = 10000;
         var maleCount = 0;
         var femaleCount = 0;
     
         // Your SSN generator
-        var ssnGenerator = new SsnGenerator(SsnGeneratorOptions.Create(seed));
+        var ssnGenerator = new SsnGenerator(SsnGeneratorOptions.Create(seed, genders: new [] { Gender.Female, Gender.Male}));
         var ssnExtractor = new SsnExtractor();
     
         // Generate samples and count
@@ -139,5 +140,26 @@ public class SsnGeneratorTests
     
         // This could be an assert in a unit test
         Assert.That(chiSquare, Is.LessThan(criticalValue));
+    }
+    
+    [TestCase(0, 1)]
+    [TestCase(123, 456)]
+    [TestCase(987654321, 638646384)]
+    public void Generate_WithDifferentSeed_ReturnsDifferentSSN(int seed1, int seed2)
+    {
+        var sut1 = new SsnGenerator(SsnGeneratorOptions.Create(seed1));
+        var sut2 = new SsnGenerator(SsnGeneratorOptions.Create(seed2));
+
+        const int count = 10;
+        List<string> ssns1 = new();
+        List<string> ssns2 = new();
+        
+        for(var i = 0; i < count; i++)
+        {
+            ssns1.Add(sut1.GenerateSsn());
+            ssns2.Add(sut2.GenerateSsn());
+        }
+        
+        Assert.That(ssns1, Is.Not.EqualTo(ssns2));
     }
 }

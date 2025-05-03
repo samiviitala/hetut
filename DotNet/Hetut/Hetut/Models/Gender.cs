@@ -3,7 +3,6 @@
 /// <summary>
 ///     Gender of a person
 /// </summary>
-[Flags]
 public enum Gender
 {
     /// <summary>
