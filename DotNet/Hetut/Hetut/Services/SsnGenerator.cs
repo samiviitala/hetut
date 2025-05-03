@@ -59,12 +59,12 @@ public class SsnGenerator : ISsnGenerator
         var century = year - yearReminder;
         var centuryChar = century switch
         {
-            2000 => "ABCDEF"[_rng.Next(6)],
-            1900 => "YXWVU-"[_rng.Next(6)],
+            2000 => _options.IncludeReform2023CenturyCharacters ? "ABCDEF"[_rng.Next(6)] : 'A',
+            1900 => _options.IncludeReform2023CenturyCharacters ? "YXWVU-"[_rng.Next(6)] : '-',
             1800 => '+',
             _ => throw new InvalidOperationException($"SSN generation encountered invalid random generated date with year {year}." +
                                                      $"Century character can only be calculated for following centuries: 1800, 1900, or 2000." +
-                                                     $"This error can occur due to system clock being set to future date, since upper boundary of the random date generation is set to current date.")
+                                                     $"This error can occur due to system clock being set to future date, since default upper boundary of the random date generation is set to current date.")
         };
         
         // Test SSNs have NNN between 900-999

@@ -207,6 +207,21 @@ public class SsnGeneratorTests
             Assert.That(info!.DateOfBirth, Is.EqualTo(date));
         }
     }
+
+    [Test]
+    public void Generate_WithIncludeReform2023CenturyCharactersFalse_GeneratesSsnWithoutReformCenturyCharacters()
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(includeReform2023CenturyCharacters: false));
+        var extractor = new SsnExtractor();
+        
+        const int count = 1000;
+        for (var i = 0; i < count; i++)
+        {
+            var ssn = sut.GenerateSsn();
+            extractor.TryExtract(ssn, out var info);
+            Assert.That(info!.IsAfter2023Reform, Is.EqualTo(false));
+        }
+    }
     
     private static IEnumerable<TestCaseData> ValidSsnDates
     {
