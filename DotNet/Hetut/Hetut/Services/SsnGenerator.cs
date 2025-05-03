@@ -31,13 +31,28 @@ public class SsnGenerator : ISsnGenerator
         {
             throw new InvalidOperationException("Options must contain at least one gender");
         }
-        
-        // Generate random date of birth
-        var currentYear = DateTime.Now.Year;
-        var year = _rng.Next(1800, currentYear + 1);
-        var month = _rng.Next(1, 13);
-        var daysInMonth = DateTime.DaysInMonth(year, month);
-        var day = _rng.Next(1, daysInMonth + 1);
+
+        // Pick date of birth
+        int year, month, day;
+        if (_options.DateOfBirthMin == _options.DateOfBirthMax)
+        {
+            // Use fixed date
+            year = _options.DateOfBirthMin.Year;
+            month = _options.DateOfBirthMin.Month;
+            day = _options.DateOfBirthMin.Day;
+        }
+        else
+        {
+            // Generate random date of birth
+            year = _rng.Next(_options.DateOfBirthMin.Year, _options.DateOfBirthMax.Year + 1);
+            month = _rng.Next(
+                year == _options.DateOfBirthMin.Year ? _options.DateOfBirthMin.Month : 1, 
+                year == _options.DateOfBirthMax.Year ? _options.DateOfBirthMax.Month + 1 : 13);
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            day = _rng.Next(
+                year == _options.DateOfBirthMin.Year && month == _options.DateOfBirthMin.Month ? _options.DateOfBirthMin.Day : 1,
+                year == _options.DateOfBirthMax.Year && month == _options.DateOfBirthMax.Month ? _options.DateOfBirthMax.Day + 1 : daysInMonth + 1);
+        }
         
         // Generate the century character based on the year
         var yearReminder = year % 100;

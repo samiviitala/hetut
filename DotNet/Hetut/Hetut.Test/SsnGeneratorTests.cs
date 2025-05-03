@@ -162,4 +162,66 @@ public class SsnGeneratorTests
         
         Assert.That(ssns1, Is.Not.EqualTo(ssns2));
     }
+
+    [Test, TestCaseSource(nameof(ValidSsnDates))]
+    public void Generate_WithDateOfBirthMin_GeneratesSsnsWithDateOfBirthGreaterOrEqual(DateOnly dateOfBirthMin)
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(dateOfBirthMin: dateOfBirthMin));
+        var extractor = new SsnExtractor();
+        
+        const int count = 1000;
+        for (var i = 0; i < count; i++)
+        {
+            var ssn = sut.GenerateSsn();
+            extractor.TryExtract(ssn, out var info);
+            Assert.That(info!.DateOfBirth, Is.GreaterThanOrEqualTo(dateOfBirthMin));
+        }
+    }
+    
+    [Test, TestCaseSource(nameof(ValidSsnDates))]
+    public void Generate_WithDateOfBirthMax_GeneratesSsnsWithDateOfBirthLessOrEqual(DateOnly dateOfBirthMax)
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(dateOfBirthMax: dateOfBirthMax));
+        var extractor = new SsnExtractor();
+        
+        const int count = 1000;
+        for (var i = 0; i < count; i++)
+        {
+            var ssn = sut.GenerateSsn();
+            extractor.TryExtract(ssn, out var info);
+            Assert.That(info!.DateOfBirth, Is.LessThanOrEqualTo(dateOfBirthMax));
+        }
+    }
+
+    [Test, TestCaseSource(nameof(ValidSsnDates))]
+    public void Generate_WithEqualDateOfBirthMinAndDateOfBirthMax_GeneratesSsnWithFixedDate(DateOnly date)
+    {
+        var sut = new SsnGenerator(SsnGeneratorOptions.Create(dateOfBirthMin: date, dateOfBirthMax: date));
+        var extractor = new SsnExtractor();
+        
+        const int count = 1000;
+        for (var i = 0; i < count; i++)
+        {
+            var ssn = sut.GenerateSsn();
+            extractor.TryExtract(ssn, out var info);
+            Assert.That(info!.DateOfBirth, Is.EqualTo(date));
+        }
+    }
+    
+    private static IEnumerable<TestCaseData> ValidSsnDates
+    {
+        get
+        {
+            yield return new TestCaseData(new DateOnly(1800,1,1));
+            yield return new TestCaseData(new DateOnly(1800,12,31));
+            yield return new TestCaseData(new DateOnly(1868,4,2));
+            yield return new TestCaseData(new DateOnly(1899,12,31));
+            yield return new TestCaseData(new DateOnly(1900,1,1));
+            yield return new TestCaseData(new DateOnly(1900,12,31));
+            yield return new TestCaseData(new DateOnly(1938,2,12));
+            yield return new TestCaseData(new DateOnly(1999,12,31));
+            yield return new TestCaseData(new DateOnly(2000,1,1));
+            yield return new TestCaseData(new DateOnly(2020,5,7));
+        }
+    }
 }

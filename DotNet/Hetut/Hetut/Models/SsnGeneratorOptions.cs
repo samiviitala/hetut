@@ -14,8 +14,8 @@ public record SsnGeneratorOptions(
     bool IsTestSsn, 
     Gender[] Genders, 
     bool IncludeReform2023CenturyCharacters,
-    DateOnly? DateOfBirthMin, 
-    DateOnly? DateOfBirthMax)
+    DateOnly DateOfBirthMin, 
+    DateOnly DateOfBirthMax)
 {
 
     public static SsnGeneratorOptions Create(
