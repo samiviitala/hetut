@@ -1,4 +1,4 @@
-﻿# Finnish Social Security Numbers
+﻿# Finnish Social Security Numbers / Suomalainen henkilötunnus
 
 This repository provides C# reference implementations for validating, generating and extracting information contained within Finnish social security numbers.
 The code is intentionally not kept DRY, for easy copy-pasting and porting to other languages.
@@ -18,6 +18,63 @@ Where:
 - Values 900 - 999 are reserved for testing purposes and are not generally considered as valid values
 - T = checksum character (0-9, A-Y) which is calculated as PPKKVVNNN % 31 and then reminder dictates the checksum with fixed values seen in _checksumDictionary
 
+> For example 170589-947H is a valid test ssn for a male born in 17.05.1989
+ 
+# Usage
+
+Validating social security numbers:
+```c#
+var validator = new SsnValidator();
+validator.Validate("170589-947H"); // true
+validator.Validate("ABC123");      //false
+```
+
+Generating social security numbers:
+```c#
+var generator = new SsnGenerator();
+generator.Generate(); // e.g. 170589-947H
+
+// we can also take control of what kind of ssns we want to generate
+var options = SsnGeneratorOptions.Create(
+            seed: 123,
+            isTestSsn: true,
+            genders: new[] { Gender.Female, Gender.Male },
+            dateOfBirthMin: new DateOnly(2020, 1, 1),
+            dateOfBirthMax: new DateOnly(2023, 1, 1),
+            includeReform2023CenturyCharacters: true
+        );
+var generator = new SsnGenerator(options); // pass options as arg for the ctor
+generator.Generate();
+```
+
+Extracting information from social security numbers:
+```c#
+var extractor = new SsnExtractor();
+extractor.TryExtract("170589-947H", out var info); // returns true for valid ssn
+// info.DateOfBirth == new DateOnly(1989, 5, 17)
+// info.Gender == Gender.Male
+// info.IsTestSsn == true
+// info.IsAfter2023Reform == false
+```
+
+# Performance
+
+Example benchmark execution. Note that we could do a lot better, given we want to squeeze more perf with e.g. C# language specific quirks.
+For any practical purposes, this level of performance should suffice though.
+
+> BenchmarkDotNet v0.14.0, Windows 11
+13th Gen Intel Core i9-13900K, 1 CPU, 32 logical and 24 physical cores .NET SDK 8.0.206
+
+
+| Method                  | Mean      | Error    | StdDev   | Gen0   | Allocated |
+|------------------------ |----------:|---------:|---------:|-------:|----------:|
+| ValidateValid           |  23.77 ns | 0.101 ns | 0.089 ns | 0.0068 |     128 B |
+| ValidateInvalidChecksum |  23.79 ns | 0.177 ns | 0.157 ns | 0.0068 |     128 B |
+| Generate                | 101.60 ns | 0.245 ns | 0.217 ns | 0.0038 |      72 B |
+| ExtractValid            |  27.14 ns | 0.149 ns | 0.132 ns | 0.0085 |     160 B |
+| ExtractInvalidChecksum  |  24.06 ns | 0.492 ns | 0.411 ns | 0.0068 |     128 B |
+
+
 ## Contributing
 If you have any suggestions or improvements, please feel free to open an issue or submit a pull request. Contributions are welcome!
 
@@ -30,6 +87,3 @@ We could for example in the validator use memory spans instead of substrings but
 
 ## License
 MIT
-
-## TODO:
-- Validation of dates below year 1800 and future dates
