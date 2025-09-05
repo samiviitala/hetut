@@ -6,36 +6,36 @@ public class BusinessIdValidator : IBusinessIdValidator
 {
     public bool Validate([NotNullWhen(true)] string? businessId)
     {
-        if (string.IsNullOrWhiteSpace(businessId))
-            return false;
-        
-        
-        // Reject input with leading or trailing whitespace
-        if (businessId != businessId.Trim())
+        if (businessId == null)
             return false;
     
-        // Parse business ID format - must contain dash
-        if (!businessId.Contains('-'))
+        // Valid business ID is always exactly 9 characters: nnnnnnn-t
+        if (businessId.Length != 9)
             return false;
     
-        var parts = businessId.Split('-');
-        if (parts.Length != 2 || parts[1].Length != 1)
+        // Dash must be at position 7
+        if (businessId[7] != '-')
             return false;
     
-        string baseNumber = parts[0];
-        if (!int.TryParse(parts[1], out int checkDigit))
+        // Validate base number (positions 0-6) - all must be digits
+        for (int i = 0; i < 7; i++)
+        {
+            if (businessId[i] < '0' || businessId[i] > '9')
+                return false;
+        }
+    
+        // Validate check digit (position 8) - must be digit
+        char checkChar = businessId[8];
+        if (checkChar < '0' || checkChar > '9')
             return false;
     
-        // Validate base number
-        if (baseNumber.Length < 6 || baseNumber.Length > 7 || !baseNumber.All(char.IsDigit))
-            return false;
+        int checkDigit = checkChar - '0';
     
-        // Calculate correct check digit
-        int expectedCheckDigit = CalculateCheckDigit(baseNumber);
+        // Calculate expected check digit
+        int expectedCheckDigit = CalculateCheckDigit(businessId);
         if (expectedCheckDigit == -1) // Remainder 1, no ID assigned
             return false;
     
-        // Validate the provided check digit
         return checkDigit == expectedCheckDigit;
     }
 
