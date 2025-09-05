@@ -23,6 +23,7 @@ public class BusinessIdValidatorTests
     [TestCase("3280643-9 ", Description = "Devved Oy, but trailing white-space is not allowed")]
     [TestCase("3280643-8 ", Description = "Devved Oy, but checksum digit is incorrect")]
     [TestCase("3280642-9 ", Description = "Devved Oy, but of the nnnnnn digits incorrect")]
+    [TestCase("00586275-5 ", Description = "Business id cannot start with two zeroes, the checksum char is correct though")]
     public void Validate_GivenInvalidBusinessId_ReturnsFalse(string? businessId)
     {
         var sut = new BusinessIdValidator();
