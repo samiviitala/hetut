@@ -26,12 +26,6 @@ public class SsnGenerator : ISsnGenerator
     /// <inheritdoc />
     public string GenerateSsn()
     {
-        // Validate options
-        if (_options.Genders.Length == 0)
-        {
-            throw new InvalidOperationException("Options must contain at least one gender");
-        }
-
         // Pick date of birth
         int year, month, day;
         if (_options.DateOfBirthMin == _options.DateOfBirthMax)

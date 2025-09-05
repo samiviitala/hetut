@@ -29,6 +29,11 @@ public record SsnGeneratorOptions(
         if(dateOfBirthMin < new DateOnly(1800, 1, 1))
             throw new ArgumentOutOfRangeException(nameof(dateOfBirthMin), "Minimum date of birth cannot be before 01.01.1800");
         
+        if (genders?.Length == 0)
+        {
+            throw new InvalidOperationException("Options must contain at least one gender");
+        }
+        
         return new SsnGeneratorOptions(
             seed ?? new Random().Next(), 
             isTestSsn ?? true,
