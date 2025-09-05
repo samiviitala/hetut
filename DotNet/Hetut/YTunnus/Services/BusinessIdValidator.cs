@@ -18,21 +18,21 @@ public class BusinessIdValidator : IBusinessIdValidator
             return false;
     
         // Validate base number (positions 0-6) - all must be digits
-        for (int i = 0; i < 7; i++)
+        for (var i = 0; i < 7; i++)
         {
             if (businessId[i] < '0' || businessId[i] > '9')
                 return false;
         }
     
         // Validate check digit (position 8) - must be digit
-        char checkChar = businessId[8];
+        var checkChar = businessId[8];
         if (checkChar < '0' || checkChar > '9')
             return false;
     
-        int checkDigit = checkChar - '0';
+        var checkDigit = checkChar - '0';
     
         // Calculate expected check digit
-        int expectedCheckDigit = CalculateCheckDigit(businessId);
+        var expectedCheckDigit = CalculateCheckDigit(businessId);
         if (expectedCheckDigit == -1) // Remainder 1, no ID assigned
             return false;
     
