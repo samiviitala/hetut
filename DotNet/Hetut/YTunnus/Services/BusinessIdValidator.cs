@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+// ReSharper disable IdentifierTypo
 
 namespace YTunnus;
 
@@ -17,11 +18,10 @@ public class BusinessIdValidator : IBusinessIdValidator
         if (businessId[7] != '-')
             return false;
     
-        // Validate base number (positions 0-6) - all must be digits
-        for (var i = 0; i < 7; i++)
+        // Validate base number (positions 0-7) - all must be digits
+        if (!int.TryParse(businessId[..7], out var nnnnnn))
         {
-            if (businessId[i] < '0' || businessId[i] > '9')
-                return false;
+            return false;
         }
     
         // Validate check digit (position 8) - must be digit
@@ -32,34 +32,42 @@ public class BusinessIdValidator : IBusinessIdValidator
         var checkDigit = checkChar - '0';
     
         // Calculate expected check digit
-        var expectedCheckDigit = CalculateCheckDigit(businessId);
+        var expectedCheckDigit = CalculateCheckDigit(nnnnnn);
         if (expectedCheckDigit == -1) // Remainder 1, no ID assigned
             return false;
     
         return checkDigit == expectedCheckDigit;
     }
 
-    private static int CalculateCheckDigit(string baseNumber)
+    private static int CalculateCheckDigit(int baseNumber)
     {
-        // Täydennä 7 numeroksi (lisää etunollia vasemmalle tarvittaessa)
-        baseNumber = baseNumber.PadLeft(7, '0');
-
-        // Kertoimet vasemmalta oikealle
+        // Extract individual digits from the integer (rightmost digit first)
+        var digits = new int[7];
+        var temp = baseNumber;
+    
+        // Fill from right to left, pad with zeros if needed
+        for (var i = 6; i >= 0; i--)
+        {
+            digits[i] = temp % 10;
+            temp /= 10;
+        }
+    
+        // Multipliers from left to right
         int[] multipliers = { 7, 9, 10, 5, 8, 4, 2 };
         var sum = 0;
-
+    
+        // Calculate sum using extracted digits
         for (var i = 0; i < 7; i++)
         {
-            var digit = int.Parse(baseNumber[i].ToString());
-            sum += digit * multipliers[i];
+            sum += digits[i] * multipliers[i];
         }
-
+    
         var remainder = sum % 11;
-
+    
         return remainder switch
         {
             0 => 0,
-            1 => -1, // Tunnusta ei anneta
+            1 => -1, // No ID assigned
             _ => 11 - remainder
         };
     }
