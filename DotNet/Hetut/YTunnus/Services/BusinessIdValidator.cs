@@ -3,8 +3,16 @@
 
 namespace YTunnus;
 
+/// <inheritdoc /> 
 public class BusinessIdValidator : IBusinessIdValidator
 {
+    
+    /// <summary>
+    ///     Checksum multipliers
+    /// </summary>
+    private readonly int[] _multipliers = { 7, 9, 10, 5, 8, 4, 2 };
+    
+    /// <inheritdoc />
     public bool Validate([NotNullWhen(true)] string? businessId)
     {
         if (businessId == null)
@@ -32,14 +40,13 @@ public class BusinessIdValidator : IBusinessIdValidator
         var checkDigit = checkChar - '0';
     
         // Calculate expected check digit
-        var expectedCheckDigit = CalculateCheckDigit(nnnnnn);
+        var expectedCheckDigit = CalculateChecksum(nnnnnn);
         if (expectedCheckDigit == -1) // Remainder 1, no ID assigned
             return false;
     
         return checkDigit == expectedCheckDigit;
     }
-
-    private static int CalculateCheckDigit(int baseNumber)
+    private int CalculateChecksum(int baseNumber)
     {
         // Extract individual digits from the integer (rightmost digit first)
         var digits = new int[7];
@@ -52,14 +59,12 @@ public class BusinessIdValidator : IBusinessIdValidator
             temp /= 10;
         }
     
-        // Multipliers from left to right
-        int[] multipliers = { 7, 9, 10, 5, 8, 4, 2 };
         var sum = 0;
     
         // Calculate sum using extracted digits
         for (var i = 0; i < 7; i++)
         {
-            sum += digits[i] * multipliers[i];
+            sum += digits[i] * _multipliers[i];
         }
     
         var remainder = sum % 11;
